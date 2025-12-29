@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Galeri Kenangan</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<script>
+tailwind.config={
+darkMode:'class',
+theme:{extend:{colors:{
+primary:'#3b82f6',
+secondary:'#8b5cf6',
+accent:'#ec4899'
+}}}}
+</script>
+</head>
+
+<body class="bg-gradient-to-br from-blue-300 via-blue-400 to-purple-400 
+dark:from-blue-950 dark:via-blue-900 dark:to-purple-950 transition">
+
+<!-- ================= LOGIN ================= -->
+<div id="loginPage" class="min-h-screen flex items-center justify-center backdrop-blur-xl">
+<div class="bg-white/70 dark:bg-gray-900/80 p-8 rounded-2xl shadow-2xl w-80">
+<h2 class="text-3xl font-bold text-center text-primary mb-6">Login</h2>
+<input id="user" placeholder="Username" class="w-full mb-3 p-3 rounded-lg">
+<input id="pass" type="password" placeholder="Password" class="w-full mb-4 p-3 rounded-lg">
+<button onclick="login()" class="w-full bg-primary text-white py-2 rounded-lg">Masuk</button>
+<p class="text-xs text-center mt-3">admin / 123</p>
+</div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div id="mainPage" class="hidden">
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-gray-900/80 backdrop-blur">
+<div class="max-w-6xl mx-auto px-4 py-3 flex justify-between">
+<h1 class="font-bold text-primary">💙 Galeri Kenangan</h1>
+<div class="space-x-3">
+<button onclick="showGallery()">📸</button>
+<button onclick="showDiary()">📔</button>
+<button onclick="toggleDark()">🌙</button>
+<button onclick="toggleMusic()">🎵</button>
+<button onclick="logout()">🚪</button>
+</div>
+</div>
+</nav>
+
+<audio id="bgMusic" loop>
+<source src="musik.mp3">
+</audio>
+
+<!-- ================= STORY BAR ================= -->
+<section class="pt-24 pb-4">
+<div class="max-w-4xl mx-auto px-4 flex gap-4 overflow-x-auto">
+<script>
+for(let i=1;i<=8;i++){
+document.write(`
+<div class="flex flex-col items-center shrink-0">
+<div class="w-16 h-16 rounded-full p-[3px] bg-gradient-to-tr from-pink-500 to-purple-500">
+<img src="foto${i}.jpg" class="rounded-full w-full h-full object-cover">
+</div>
+<p class="text-xs mt-1">Story ${i}</p>
+</div>
+`);
+}
+</script>
+</div>
+</section>
+
+<!-- ================= GALERI ================= -->
+<section id="gallerySection" class="pb-20">
+<div class="max-w-4xl mx-auto px-4 space-y-8">
+
+<script>
+for(let i=1;i<=11;i++){
+document.write(`
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden" data-aos="fade-up">
+
+<div class="flex items-center gap-3 p-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500"></div>
+<p class="font-semibold text-sm">galeri_kenangan</p>
+</div>
+
+<img src="foto${i}.jpg"
+onclick="openPopup(${i-1})"
+class="w-full aspect-square object-cover cursor-pointer">
+
+<div class="p-3 space-y-2">
+<div class="flex gap-4 text-xl">
+<button onclick="like(this)">❤️</button> 💬 ✈️
+</div>
+<p class="text-sm like-count">0 suka</p>
+<p class="text-sm">
+<b>galeri_kenangan</b> Cerita indah di balik foto ke-${i}.
+</p>
+<input placeholder="Tambah komentar..."
+class="w-full mt-2 text-sm p-2 rounded bg-gray-100 dark:bg-gray-700">
+</div>
+
+</div>
+`);
+}
+</script>
+
+</div>
+</section>
+
+<!-- ================= DIARY ================= -->
+<section id="diarySection" class="hidden pb-20">
+<div class="max-w-3xl mx-auto px-6 space-y-10">
+<h2 class="text-4xl font-bold text-center text-secondary mb-10">📖 Diary Kenangan</h2>
+
+<div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl p-6 shadow" data-aos="fade-right">
+<h3 class="text-xl font-bold text-accent mb-2">14 Januari 2024</h3>
+<p class="leading-relaxed">
+Pagi itu langit biru seolah menyimpan rahasia kecil tentang kita.
+Tidak ada janji, tidak ada rencana besar,
+hanya tawa sederhana yang perlahan tumbuh menjadi kenangan.
+</p>
+</div>
+
+<div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl p-6 shadow" data-aos="fade-left">
+<h3 class="text-xl font-bold text-accent mb-2">21 Februari 2024</h3>
+<p class="leading-relaxed">
+Hari berjalan pelan, tapi rasanya hangat.
+Seperti membaca satu bab novel yang ingin diulang,
+karena di sana ada rasa tenang yang sulit dijelaskan.
+</p>
+</div>
+
+</div>
+</section>
+
+<!-- ================= POPUP ================= -->
+<div id="popup" class="fixed inset-0 hidden items-center justify-center bg-black/50 backdrop-blur z-50">
+<div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-4 relative">
+<button onclick="closePopup()" class="absolute top-2 right-3 text-xl">✖</button>
+<img id="popupImg" class="w-full aspect-square object-cover rounded-xl mb-3">
+<h3 id="popupTitle" class="font-bold text-primary"></h3>
+<p id="popupStory" class="text-sm mt-1"></p>
+<div class="flex justify-between mt-3">
+<button onclick="prevPhoto()">◀</button>
+<button onclick="nextPhoto()">▶</button>
+</div>
+</div>
+</div>
+
+<footer class="text-center py-6 text-white bg-primary">
+© 2025 Galeri Kenangan
+</footer>
+
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+AOS.init({once:true});
+
+function login(){
+  const userInput = document.getElementById("user");
+  const passInput = document.getElementById("pass");
+  const loginPage = document.getElementById("loginPage");
+  const mainPage = document.getElementById("mainPage");
+
+  if(userInput.value === "admin" && passInput.value === "123"){
+    loginPage.classList.add("hidden");
+    mainPage.classList.remove("hidden");
+  } else {
+    alert("Username atau password salah");
+  }
+}
+
+function logout(){location.reload();}
+function toggleDark(){document.documentElement.classList.toggle('dark')}
+
+const music=document.getElementById('bgMusic');let play=false;
+function toggleMusic(){play?music.pause():music.play();play=!play}
+
+function showDiary(){gallerySection.classList.add('hidden');diarySection.classList.remove('hidden')}
+function showGallery(){diarySection.classList.add('hidden');gallerySection.classList.remove('hidden')}
+
+function like(btn){
+let p=btn.parentElement.nextElementSibling;
+let n=parseInt(p.innerText)||0;
+p.innerText=(n+1)+" suka";
+}
+
+const photos=[];
+for(let i=1;i<=11;i++){
+photos.push({src:`foto${i}.jpg`,title:`Kenangan ${i}`,story:`Cerita penuh warna.`})
+}
+let current=0;
+function openPopup(i){current=i;update();popup.classList.remove('hidden');popup.classList.add('flex')}
+function closePopup(){popup.classList.add('hidden')}
+function update(){
+popupImg.src=photos[current].src;
+popupTitle.innerText=photos[current].title;
+popupStory.innerText=photos[current].story;
+}
+function nextPhoto(){current=(current+1)%photos.length;update()}
+function prevPhoto(){current=(current-1+photos.length)%photos.length;update()}
+</script>
+
+</body>
+</html>
